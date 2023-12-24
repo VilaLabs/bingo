@@ -11,17 +11,6 @@ class _BingoScreenState extends State<BingoScreen> {
   late int currentNumber = 0;
   Random random = Random();
 
-  // Mapeamento de números para URLs de GIFs correspondentes
-  final Map<int, String> gifMap = {
-    22: 'https://media0.giphy.com/media/hrEZUfoNGHOz5Luc8M/giphy.gif?cid=ecf05e47ydzhx9omlq2wc4eyx26c91vyqvip384kbmrxxoww&ep=v1_gifs_search&rid=giphy.gif&ct=g', // Exemplo para o número 22
-    // Adicione outros números e URLs de GIFs conforme necessário
-  };
-
-  String getCurrentGifUrl(int number) {
-    // Retorna a URL do GIF correspondente ao número sorteado, ou uma URL padrão
-    return gifMap[number] ?? 'https://exemplo.com/default_gif.gif';
-  }
-
   void generateNewNumber() {
     // Lógica para gerar um novo número de 1 a 90
     if (drawnNumbers.length < 90) {
@@ -89,57 +78,35 @@ class _BingoScreenState extends State<BingoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bingo de 90 Bolas'),
+        title: const Text('Bingo Especial de Natal'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 20.0),
-          // Círculo para exibir o número sorteado e o GIF ao lado
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 200.0,
-                height: 200.0,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blue,
-                ),
-                child: Center(
-                  child: Text(
-                    currentNumber != null ? currentNumber.toString() : '',
-                    style: const TextStyle(fontSize: 48.0, color: Colors.white),
-                  ),
-                ),
+          // Círculo para exibir o número sorteado
+          Container(
+            width: 300.0,
+            height: 300.0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color.fromARGB(255, 20, 119, 20),
+            ),
+            child: Center(
+              child: Text(
+                currentNumber != null ? currentNumber.toString() : '',
+                style: const TextStyle(fontSize: 90.0, color: Colors.white),
               ),
-              const SizedBox(width: 20.0), // Espaço entre o círculo e o GIF
-              // Exibição do GIF usando Image.network baseado no número atual
-              Image.network(
-                getCurrentGifUrl(currentNumber),
-                width: 100, // Ajuste o tamanho conforme necessário
-                height: 100,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null,
-                  );
-                },
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 30.0),
           // Texto abaixo do círculo
           Text(
             'Número Sorteado: ${currentNumber != null ? currentNumber.toString() : ''}',
             style: const TextStyle(fontSize: 18.0),
           ),
-          const SizedBox(height: 20.0),
-          // Botões para gerar novo número, declarar bingo e iniciar nova rodada
+          const SizedBox(height: 30.0),
+          // Botões e Lista de Números Sorteados
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -157,7 +124,7 @@ class _BingoScreenState extends State<BingoScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 180.0),
           // Lista de Números Sorteados
           Wrap(
             alignment: WrapAlignment.center,
@@ -169,13 +136,13 @@ class _BingoScreenState extends State<BingoScreen> {
                   height: 50.0,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.blue,
+                    color: Color.fromARGB(255, 143, 24, 24),
                   ),
                   child: Center(
                     child: Text(
                       number.toString(),
                       style:
-                          const TextStyle(fontSize: 20.0, color: Colors.white),
+                          const TextStyle(fontSize: 30.0, color: Colors.white),
                     ),
                   ),
                 ),
