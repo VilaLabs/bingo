@@ -95,7 +95,7 @@ class _BingoScreenState extends State<BingoScreen> {
             child: Center(
               child: Text(
                 currentNumber != null ? currentNumber.toString() : '',
-                style: const TextStyle(fontSize: 90.0, color: Colors.white),
+                style: const TextStyle(fontSize: 120.0, color: Colors.white),
               ),
             ),
           ),
@@ -124,7 +124,7 @@ class _BingoScreenState extends State<BingoScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 180.0),
+          const SizedBox(height: 50.0),
           // Lista de Números Sorteados
           Wrap(
             alignment: WrapAlignment.center,
