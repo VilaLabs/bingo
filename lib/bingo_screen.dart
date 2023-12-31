@@ -197,8 +197,6 @@ class _BingoScreenState extends State<BingoScreen> {
         return 'Preparem os Fogos';
       case 33:
         return 'Idade de Cristo';
-      case 38:
-        return 'Justiça de Goiás';
       case 45:
         return 'Fim do Primeiro Tempo';
       case 51:
