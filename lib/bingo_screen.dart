@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -31,7 +33,9 @@ class _BingoScreenState extends State<BingoScreen> {
   }
 
   void declareBingo() {
-    // Todos os números foram sorteados, o jogador ganhou!
+    List<int> userNumbers = [];
+    TextEditingController controller = TextEditingController();
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -40,8 +44,15 @@ class _BingoScreenState extends State<BingoScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Temos um vencedor!'),
-              SizedBox(height: 16.0),
+              const Text('Informe seus números (separados por vírgula):'),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: 'Ex: 5, 10, 15',
+                ),
+              ),
+              const SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -50,18 +61,106 @@ class _BingoScreenState extends State<BingoScreen> {
                       Navigator.of(context).pop(); // Fecha a modal
                       startNewRound(); // Inicia um novo jogo
                     },
-                    child: Text('Novo Jogo'),
+                    child: const Text('Novo Jogo'),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop(); // Fecha a modal
+
+                      // Obter números do usuário do campo de texto
+                      List<String> inputNumbers = controller.text
+                          .split(',')
+                          .map((e) => e.trim())
+                          .toList();
+
+                      // Converter para inteiros
+                      userNumbers = inputNumbers
+                          .map((e) => int.tryParse(e) ?? 0)
+                          .toList();
+
+                      // Verificar se todos os números do usuário estão no array
+                      bool isWinner = userNumbers
+                          .every((number) => drawnNumbers.contains(number));
+
+                      // Exibir mensagem de acordo com o resultado
+                      if (isWinner) {
+                        declareWinner();
+                      } else {
+                        showLosingMessage();
+                      }
                     },
-                    child: Text('Cancelar'),
+                    child: const Text('Verificar'),
                   ),
                 ],
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  void declareWinner() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Parabéns, você é o grande VENCEDOR!',
+                style: TextStyle(
+                  fontSize:
+                      34.0, // Ajuste o tamanho da fonte conforme necessário
+                  color: Colors.green, // Altere a cor para verde
+                  fontWeight:
+                      FontWeight.bold, // Pode adicionar negrito se desejar
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Fecha a modal
+                      startNewRound(); // Inicia um novo jogo
+                    },
+                    child: const Text('Novo Jogo'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Fecha a modal
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showLosingMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('BARRIGADA'),
+          content: const Text(
+              'Parece que você comeu bola meu amigo kkkk Sem torrada pra você hoje'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+              child: const Text('OK'),
+            ),
+          ],
         );
       },
     );
@@ -74,11 +173,56 @@ class _BingoScreenState extends State<BingoScreen> {
     });
   }
 
+  String getSpecialMessage(int number) {
+    switch (number) {
+      case 1:
+        return 'Começou o Jogo';
+      case 5:
+        return 'Cachorro';
+      case 9:
+        return 'Pingo no pé 9 é';
+      case 10:
+        return 'Craque de Bola';
+      case 11:
+        return 'Um atrás do outro';
+      case 13:
+        return 'Deu Azar';
+      case 22:
+        return 'Dois patinhos na lagoa';
+      case 23:
+        return 'Meio Alegre';
+      case 24:
+        return 'Alegria, Alegria';
+      case 31:
+        return 'Preparem os Fogos';
+      case 33:
+        return 'Idade de Cristo';
+      case 38:
+        return 'Justiça de Goiás';
+      case 45:
+        return 'Fim do Primeiro Tempo';
+      case 51:
+        return 'Boa Idéia';
+      case 55:
+        return 'Dois cachorros do Padre';
+      case 66:
+        return 'Um tapa atrás da orelha';
+      case 69:
+        return 'Um indo, o outro voltando';
+      case 90:
+        return 'Fim do Jogo';
+
+      // Adicione mais casos conforme necessário
+      default:
+        return 'Número $number!';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bingo Especial de Natal'),
+        title: const Text('Bingo Especial de Ano Novo!'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,8 +246,8 @@ class _BingoScreenState extends State<BingoScreen> {
           const SizedBox(height: 30.0),
           // Texto abaixo do círculo
           Text(
-            'Número Sorteado: ${currentNumber != null ? currentNumber.toString() : ''}',
-            style: const TextStyle(fontSize: 18.0),
+            currentNumber != null ? getSpecialMessage(currentNumber) : '',
+            style: const TextStyle(fontSize: 28.0),
           ),
           const SizedBox(height: 30.0),
           // Botões e Lista de Números Sorteados
